@@ -90,9 +90,8 @@ var agree_but = function(source){
 	});
 }
 
-var mypopover = function(source){
-	$(source).on('inserted.bs.popover', function () {
-		var stu_num = $(this).attr("stu_num");
+var mypopover = function(stu_num,div_id){
+		/* var stu_num = $(this).attr("stu_num"); */
 		$.get("lxy/getdetailstu",{"stu_num":stu_num},function(data){
 			var html = '';
 			var keyArr = ['姓名','学号','性别','专业','年级','班级','生日','身份证','电话','email'];
@@ -102,12 +101,11 @@ var mypopover = function(source){
 					html+= '<p>'+keyArr[index++]+':'+data[item]+'</p><br>';
 				}
 			}
-			$(source).attr("data-content","姓名:顿6666");
-			console.log($(source).attr("data-content"));
-			$(source).popover('toggle');
+			console.log(html);
+			$("#"+div_id).html(html);
 		});
 		
-	});
+		return '<div id="'+div_id+'">Loading...</div>';
 }
 
 
@@ -133,13 +131,20 @@ var loadMessages = function(){
 				$("tbody.abstract").append(html);
 				var but = $("tbody.abstract").children().last().find("#delete_but");
 				var but1 = $("tbody.abstract").children().last().find("#agree_but");
-				var pp = $("tbody.abstract").children().last().find(".pp");
+				var pp = $("tbody.abstract").children().last().find("a.pp");
 				delete_but(but);
 				agree_but(but1);
-				mypopover(pp);
+				//mypopover(pp);
+				$(pp).popover({
+					"html":true,
+					"content":function(){
+						var div_id = "tmp_id"+$.now();
+						return mypopover($(this).attr("stu_num"),div_id);
+					}
+				});
 			});
 			
-			 $("[data-toggle='popover']").popover('hide');
+			/*  $("[data-toggle='popover']").popover('hide'); */
 	});
 }
 	 $(function(){
