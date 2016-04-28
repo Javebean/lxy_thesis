@@ -126,6 +126,22 @@ public class StudentDao {
 		}
 	}
 	
+	//是课题人数少1
+	public boolean updateIssueAddone(int id){
+		try{
+			String hql = "update Issue set limit_num = limit_num+1 where id=?";
+			int e = getSession().createQuery(hql).setInteger(0, id).executeUpdate();
+			if(e>0){
+				return true;
+			}else{
+				return false;
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
 	//根据课题id去查课题‘
 	public List<Issue> getIssueByIdArr(List<String> ids){
 		try{
@@ -140,6 +156,22 @@ public class StudentDao {
 					hql.append(",");
 				}
 			}
+			
+			hql.append(" order by field ( id, ");
+			
+			for(int i=0;i<len;i++){
+				if(i==len-1){
+					hql.append(ids.get(i));
+					hql.append(")");
+				}else{
+					hql.append(ids.get(i));
+					hql.append(",");
+				}
+			}
+			
+			
+			
+			
 			
 			List<Issue> list = getSession().createSQLQuery(hql.toString()).addEntity(Issue.class).list();
 			return list;

@@ -53,7 +53,7 @@
 								<th>课题名称</th>
 								<th>指导老师</th>
 								<th>限选专业</th>
-								<th>限选人数</th>
+								<th>状态</th>
 								<th>
 									操作
 								</th>
@@ -85,15 +85,43 @@ var delete_but = function(source){
 }
 
 
+var mypopover = function(tea_num,div_id){
+	$.get("lxy/getteabynum/"+tea_num,function(data){
+		var html = '';
+		var keyArr = ['老师编号','姓名','性别','电话','email','职称','老师介绍'];
+		var index = 0;
+		for(var item in data){
+			console.log(item);
+			if(item!="id" && item!="password"){
+				html+= '<p>'+keyArr[index++]+':'+data[item]+'</p><br>';
+			}
+		}
+		$("#"+div_id).html(html);
+	});
+	
+	return '<div id="'+div_id+'">Loading...</div>';
+}
+
+
+
 var loadMessages = function(start){
 	$.getJSON("lxy/getstuissues/"+stu,function(data){
 		$("tbody.abstract").empty();
-		$.each(data,function(){
+		$.each(data,function(index){
+			var stateStr;
+			if(this.state){
+				stateStr = "通过";
+			}else{
+				stateStr = "不通过";
+				
+			}
+			
+			
 			var html = '<tr>'
 						+'<td>'+this.i_name+'</td>'
-						+'<td>'+this.i_teacher+'</td>'
+						+'<td>'+this.i_teacher+'<a tabindex="'+index+'" data-trigger="focus" tea_num="'+this.tea_num+'" title="老师信息" class="pp" data-container="body" data-toggle="popover" data-placement="bottom" data-content="">[详细]</a></td>'
 						+'<td>'+this.limit_pro+'</td>'
-						+'<td>'+this.limit_num+'</td>'
+						+'<td>'+stateStr+'</td>'
 						+'<td>'
 							+'<button type="button" class="btn btn-danger" id="delete_but" de_id="'+this.id+'">取消选择</button>'
 						+'</td>'
@@ -101,6 +129,17 @@ var loadMessages = function(start){
 			$("tbody.abstract").append(html);
 			var but = $("tbody.abstract").children().last().find("#delete_but");
 			delete_but(but);
+			
+			var pp = $("tbody.abstract").children().last().find("a.pp");
+			$(pp).popover({
+				"html":true,
+				"content":function(){
+					var div_id = "tmp_id"+$.now();
+					return mypopover($(this).attr("tea_num"),div_id);
+				}
+			});
+			
+			
 		});
 		
 	});

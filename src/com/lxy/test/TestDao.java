@@ -38,9 +38,9 @@ public class TestDao {
 	@Test
 	public void testgetIssueByIdArr(){
 		List<String> ids = new ArrayList<String>();
+		ids.add("4");
 		ids.add("2");
 		ids.add("3");
-		ids.add("4");
 		List<Issue> issueByIdArr = sdao.getIssueByIdArr(ids);
 		for(Issue i :issueByIdArr){
 			System.out.println(i.getI_name());

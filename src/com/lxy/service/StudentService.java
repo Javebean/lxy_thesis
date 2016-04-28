@@ -1,7 +1,9 @@
 package com.lxy.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -51,13 +53,27 @@ public class StudentService {
 		
 	}
 	
+	public Map<String,Boolean> getStudent_Issue2(String stu_num){
+		List<Student_issue> student_Issue = sdao.getStudent_Issue(stu_num);
+		
+		Map<String,Boolean> map = new HashMap<String, Boolean>();
+		
+		for(Student_issue s : student_Issue){
+			map.put(s.getIssue_id(), s.getState()==1?true:false);
+		}
+		return map;
+		
+	}
+	
+	
 	public List<String> getStudent_Issue(String stu_num){
 		List<Student_issue> student_Issue = sdao.getStudent_Issue(stu_num);
-		List<String> result = new ArrayList<String>( );
+		List<String> list = new ArrayList<String>();
+		
 		for(Student_issue s : student_Issue){
-			result.add(s.getIssue_id());
+			list.add(s.getIssue_id());
 		}
-		return result;
+		return list;
 		
 	}
 	
@@ -76,14 +92,25 @@ public class StudentService {
 	}
 	
 	public List<Issue> getIssueByIdArr(String stu_num){
-		List<String> student_Issue = getStudent_Issue(stu_num);
-		List<Issue> issueByIdArr = sdao.getIssueByIdArr(student_Issue);
+		Map<String, Boolean> student_Issue = getStudent_Issue2(stu_num);
+		List<String> issId = new ArrayList<String>();
+		for(Map.Entry<String, Boolean> s : student_Issue.entrySet()){
+			issId.add(s.getKey());
+		}
+		
+		List<Issue> issueByIdArr = sdao.getIssueByIdArr(issId);
+		int index = 0;
+		for(Map.Entry<String, Boolean> s : student_Issue.entrySet()){
+			issueByIdArr.get(index++).setState(s.getValue());
+		}
+		
 		return issueByIdArr;
 	}
 	
 	//删除该学生的课题
 	public boolean deleteIssueByStu(String stu_num,String issue_id){
-		return sdao.deleteIssueByStu(stu_num, issue_id);
+		sdao.deleteIssueByStu(stu_num, issue_id);
+		return sdao.updateIssueAddone(Integer.parseInt(issue_id));
 	}
 	
 	public Student getStuByStuNum(String stu_num){

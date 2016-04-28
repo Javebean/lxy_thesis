@@ -119,7 +119,7 @@ var loadMessages = function(){
 				var html = '<tr>'
 							+'<td>'+this.iss_name+'</td>'
 							+'<td>'+this.stu_num+'</td>'
-							+'<td>'+this.stu_name+'<a tabindex="'+index+'" data-trigger="focus" stu_num="'+this.stu_num+'" title="学生信息" class="pp" data-container="body" data-toggle="popover" data-placement="bottom" data-content="">[详细]</a>'
+							+'<td>'+this.stu_name+'<a tabindex="'+index+'" data-trigger="focus" stu_num="'+this.stu_num+'" title="学生信息" class="pp" data-container="body" data-toggle="popover" data-placement="bottom" data-content="">[详细]</a></td>'
 							+'<td>'+this.stu_sex+'</td>'
 							+'<td>'+this.stu_pro+'</td>'
 							+'<td>'+this.state+'</td>'
@@ -143,8 +143,6 @@ var loadMessages = function(){
 					}
 				});
 			});
-			
-			/*  $("[data-toggle='popover']").popover('hide'); */
 	});
 }
 	 $(function(){
