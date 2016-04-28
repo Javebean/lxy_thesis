@@ -111,6 +111,24 @@ public class TeacherDao {
 
 	}
 	
+	//重新修改老师审核。不通过修改为置状态码为0
+	
+	public boolean rejectStudent_issueById(int id){
+		try{
+			String hql = "update Student_issue set state=2 where id = ?";
+			int ex = getSession().createQuery(hql).setInteger(0, id).executeUpdate();
+			if(ex>0){
+				return true;
+			}else{
+				return false;
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	
 	//老师审核不通过
 	public boolean deleteStudent_issuebyId(int id){
 		try{

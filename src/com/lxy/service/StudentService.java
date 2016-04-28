@@ -53,13 +53,13 @@ public class StudentService {
 		
 	}
 	
-	public Map<String,Boolean> getStudent_Issue2(String stu_num){
+	public Map<String,Integer> getStudent_Issue2(String stu_num){
 		List<Student_issue> student_Issue = sdao.getStudent_Issue(stu_num);
 		
-		Map<String,Boolean> map = new HashMap<String, Boolean>();
+		Map<String,Integer> map = new HashMap<String, Integer>();
 		
 		for(Student_issue s : student_Issue){
-			map.put(s.getIssue_id(), s.getState()==1?true:false);
+			map.put(s.getIssue_id(), s.getState());
 		}
 		return map;
 		
@@ -92,15 +92,15 @@ public class StudentService {
 	}
 	
 	public List<Issue> getIssueByIdArr(String stu_num){
-		Map<String, Boolean> student_Issue = getStudent_Issue2(stu_num);
+		Map<String, Integer> student_Issue = getStudent_Issue2(stu_num);
 		List<String> issId = new ArrayList<String>();
-		for(Map.Entry<String, Boolean> s : student_Issue.entrySet()){
+		for(Map.Entry<String, Integer> s : student_Issue.entrySet()){
 			issId.add(s.getKey());
 		}
 		
 		List<Issue> issueByIdArr = sdao.getIssueByIdArr(issId);
 		int index = 0;
-		for(Map.Entry<String, Boolean> s : student_Issue.entrySet()){
+		for(Map.Entry<String, Integer> s : student_Issue.entrySet()){
 			issueByIdArr.get(index++).setState(s.getValue());
 		}
 		

@@ -109,11 +109,14 @@ var loadMessages = function(start){
 		$("tbody.abstract").empty();
 		$.each(data,function(index){
 			var stateStr;
-			if(this.state){
+			var sta = this.state;
+			console.log(this);
+			if(sta==0){
+				stateStr = "未审核";
+			}else if(sta==1){
 				stateStr = "通过";
-			}else{
-				stateStr = "不通过";
-				
+			}else if(sta==2){
+				stateStr = "未通过";
 			}
 			
 			

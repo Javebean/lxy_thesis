@@ -44,7 +44,8 @@ public class StudentController {
 	//获取该学生的选题
 	@RequestMapping(value="getstuissues/{stu_num}")
 	public List<Issue> getIssueByIdArr(@PathVariable String stu_num){
-		return ss.getIssueByIdArr(stu_num);
+		 List<Issue> issueByIdArr = ss.getIssueByIdArr(stu_num);
+		 return issueByIdArr;
 	}
 	
 	

@@ -101,7 +101,7 @@ public class StudentDao {
 	@SuppressWarnings("unchecked")
 	public List<Student_issue> getStudent_IssueByTeaNum(String tea_num){
 		try{
-			String hql = "from Student_issue where tea_num = ?";
+			String hql = "from Student_issue where tea_num = ? and state != 2";
 			List<Student_issue>  list = getSession().createQuery(hql).setString(0, tea_num).list();
 			return list;
 		}catch(Exception e){

@@ -21,7 +21,7 @@ public class Issue {
 	private int limit_num;//限选人数
 	private boolean select;//是否被选择
 	
-	private boolean state;//是否同意该生选课
+	private int state;//是否同意该生选课 0为审核  1通过  2没通过
 	
 	@GenericGenerator(name="hw",strategy="native")
 	@GeneratedValue(generator="hw")
@@ -76,10 +76,11 @@ public class Issue {
 	}
 	
 	@Transient
-	public boolean isState() {
+	public int getState() {
 		return state;
 	}
-	public void setState(boolean state) {
+	
+	public void setState(int state) {
 		this.state = state;
 	}
 	

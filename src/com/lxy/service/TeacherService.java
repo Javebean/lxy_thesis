@@ -69,7 +69,7 @@ public class TeacherService {
 			ci = new CheckIssue();
 			ci.setId(s.getId());
 			ci.setIss_name(issueById.getI_name());
-			ci.setState(s.getState()==0?"未审核":"已审核");
+			ci.setState(s.getState()==0?"未审核":"已通过");
 			ci.setStu_name(st.getName());
 			ci.setStu_num(st.getStu_num());
 			ci.setStu_pro(st.getProfession());
@@ -82,7 +82,8 @@ public class TeacherService {
 	
 	//审核不通过
 	public boolean deleteStudent_issuebyId(int id){
-		return tdao.deleteStudent_issuebyId(id);
+		//return tdao.deleteStudent_issuebyId(id);
+		return tdao.rejectStudent_issueById(id);
 	}
 	
 	//审核通过
