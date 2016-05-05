@@ -1,7 +1,9 @@
 package com.lxy.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -89,6 +91,17 @@ public class TeacherService {
 	//审核通过
 	public boolean agreeStudent_issue(int id){
 		return tdao.agreeStudent_issue(id);
+	}
+	
+	
+	public Map<String,Integer> countIssueSelectByStu(String tea_num){
+		Map<String,Integer> result = new HashMap<String, Integer>();
+		List<Issue> issuerByTname = tdao.getIssuerByTname(tea_num);
+		for(Issue i : issuerByTname){
+			long c = tdao.getCountIssueSelectByStu(i.getId()+"");
+			result.put(i.getI_name(), (int)c);
+		}
+		return result;
 	}
 	
 }

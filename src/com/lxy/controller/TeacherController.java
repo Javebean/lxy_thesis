@@ -1,6 +1,7 @@
 package com.lxy.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -67,5 +68,11 @@ public class TeacherController {
 	@RequestMapping(value="agreestudent_issue/{id}")
 	public boolean agreeStudent_issue(@PathVariable int id){
 		return ts.agreeStudent_issue(id);
+	}
+	
+	//统计老师课题被选的情况
+	@RequestMapping(value="countissueselectbystu/{tea_num}")
+	public Map<String,Integer> countIssueSelectByStu(@PathVariable String tea_num){
+		return ts.countIssueSelectByStu(tea_num);
 	}
 }

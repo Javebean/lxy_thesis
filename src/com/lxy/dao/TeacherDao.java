@@ -160,4 +160,18 @@ public class TeacherDao {
 		}
 	}
 	
+	//这个是统计老师的课题被学生
+	
+	public long getCountIssueSelectByStu(String issue_id){
+		try{
+			String hql = "select count(id) from Student_issue where issue_id = ?";
+			long count = (long) getSession().createQuery(hql).setString(0, issue_id).uniqueResult();
+			return count;
+		}catch(Exception e){
+			e.printStackTrace();
+			return 0;
+		}
+	}
+	
+	
 }

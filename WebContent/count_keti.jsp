@@ -45,66 +45,61 @@
 			<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
 				<h1 class="page-header">控制台</h1>
 
-				<h2 class="sub-header">管理课题</h2>
+				<h2 class="sub-header">选题统计</h2>
 				<div class="table-responsive">
-					<table class="table table-striped">
-						<thead>
-							<tr>
-								<th>课题名称</th>
-								<th>知道老师</th>
-								<th>限选专业</th>
-								<th>限选人数</th>
-								<th>
-									操作
-								</th>
-							</tr>
-						</thead>
-						<tbody class="abstract">
-						
-						</tbody>
-					</table>
+					<div id="main" style="width: 50%;height:400px;"></div>
 					
 				</div>
 			</div>
 		</div>
 	</div>
+
+<script src="js/echarts.common.min.js"></script>
 <script type="text/javascript">
-/*public function*/
-var delete_but = function(source){
-	$(source).click(function(){
-		var de_id = $(source).attr("de_id");
-		deleteItem("lxy/deleissue",de_id);
-	});
-}
+// 基于准备好的dom，初始化echarts实例
+var myChart = echarts.init(document.getElementById('main'));
 
-
-var loadMessages = function(){
+var getCountSelectByStu = function(){
 	var tea_num = getCookie("user");
-	$.getJSON("lxy/getissuebytea/"+tea_num,function(data){
-		$("tbody.abstract").empty();
-		$.each(data,function(){
-			var html = '<tr>'
-						+'<td>'+this.i_name+'</td>'
-						+'<td>'+this.i_teacher+'</td>'
-						+'<td>'+this.limit_pro+'</td>'
-						+'<td>'+this.limit_num+'</td>'
-						+'<td>'
-							+'<a type="button" class="btn btn-success" href="edit_keti.jsp?kt_id='+this.id+'">编辑</a>'
-							+'<button type="button" class="btn btn-danger" id="delete_but" de_id="'+this.id+'">删除</button>'
-						+'</td>'
-						+'</tr>';
-			$("tbody.abstract").append(html);
-			var but = $("tbody.abstract").children().last().find("#delete_but");
-			delete_but(but);
+	var arr1 = [];
+	var arr2 = [];
+	$.getJSON("lxy/countissueselectbystu/"+tea_num,function(data){
+		for(var item in data){
+			arr1.push(item);
+			arr2.push(data[item]);
+		}
+		
+		// 使用刚指定的配置项和数据显示图表。
+		// 指定图表的配置项和数据
+		myChart.setOption({
+		    title: {
+		        text: '老师课题被选情况统计'
+		    },
+		    tooltip: {},
+		    legend: {
+		        data:['人数']
+		    },
+		    xAxis: {
+		        data: arr1
+		    },
+		    yAxis: {},
+		    series: [{
+		        name: '人数',
+		        type: 'bar',
+		        data: arr2
+		    }]
 		});
 		
-	});
-	
-}
-	 $(function(){
-		 loadMessages();
+		
+		
 	})
-</script>
+}
 
+$(function(){
+	getCountSelectByStu();
+});
+
+
+</script>
 </body>
 </html>
