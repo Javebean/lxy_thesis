@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.lxy.entities.Issue;
+import com.lxy.entities.Message;
 import com.lxy.entities.Student;
 import com.lxy.entities.Student_issue;
 
@@ -197,4 +198,18 @@ public class StudentDao {
 			return false;
 		}
 	}
+	
+	
+
+	//留言的接口i
+	public boolean addMessage2Tea(Message m){
+		try{
+			getSession().save(m);
+			return true;
+		}catch(Exception e){
+			return false;
+		}
+		
+	}
+	
 }

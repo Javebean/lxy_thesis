@@ -12,6 +12,7 @@ import com.lxy.dao.StudentDao;
 import com.lxy.dao.TeacherDao;
 import com.lxy.entities.CheckIssue;
 import com.lxy.entities.Issue;
+import com.lxy.entities.Message;
 import com.lxy.entities.Student;
 import com.lxy.entities.Student_issue;
 import com.lxy.entities.Teacher;
@@ -102,6 +103,36 @@ public class TeacherService {
 			result.put(i.getI_name(), (int)c);
 		}
 		return result;
+	}
+	
+	//查询给该老师的所有留言
+	public List<Message> getAllMessageByTeaNum(String tea_num){
+		
+		List<Message> list =  tdao.getAllMessageByTeaNum(tea_num);
+		for(Message m:list){
+			//先判断表里面 老师的名字是不是为空，为空就保存一下，
+			
+			if(null==m.getTea_name()){
+				String tea_id = m.getTea_id();
+				Teacher t = tdao.getTeacherByTnum(tea_id);
+				m.setTea_name(t.getName());
+				
+				String stu_id = m.getStu_id();
+				Student s = sdao.getStuByStuNum(stu_id);
+				m.setStu_name(s.getName());
+				tdao.updateMessage(m);
+			}
+		}
+		return list;
+	}
+	//老师回复
+	public boolean updateMessageReply( String id ,String reply){
+		return tdao.updateMessageReply(id, reply);
+	}
+	
+	//删除该留言
+	public boolean deleteMessageById(int id){
+		return tdao.deleteMessageById(id);
 	}
 	
 }

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.lxy.entities.CheckIssue;
 import com.lxy.entities.Issue;
+import com.lxy.entities.Message;
 import com.lxy.entities.Teacher;
 import com.lxy.service.TeacherService;
 
@@ -74,5 +75,24 @@ public class TeacherController {
 	@RequestMapping(value="countissueselectbystu/{tea_num}")
 	public Map<String,Integer> countIssueSelectByStu(@PathVariable String tea_num){
 		return ts.countIssueSelectByStu(tea_num);
+	}
+	
+	
+	//查询给该老师的所有留言
+	@RequestMapping(value="getallmessagebytnum/{tea_num}")
+	public List<Message> getAllMessageByTeaNum(@PathVariable String tea_num){
+		return ts.getAllMessageByTeaNum(tea_num);
+	}
+	
+	//老师回复
+	@RequestMapping(value="teareply2stu/{id}")
+	public boolean updateMessageReply(@PathVariable String id ,String reply){
+		return ts.updateMessageReply(id, reply);
+	}
+	
+	//删除该留言
+	@RequestMapping(value="deletemesbyid/{id}")
+	public boolean deleteMessageById(@PathVariable int id){
+		return ts.deleteMessageById(id);
 	}
 }

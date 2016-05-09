@@ -40,20 +40,19 @@
 	<div class="container-fluid">
 		<div class="row">
 
-			<%@include file="public/stu_nav.html"%>
+			<%@include file="public/tea_nav.html"%>
 
 			<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
 				<h1 class="page-header">控制台</h1>
 
-				<h2 class="sub-header">管理课题</h2>
+				<h2 class="sub-header">学生留言</h2>
 				<div class="table-responsive">
 					<table class="table table-striped">
 						<thead>
 							<tr>
-								<th>课题名称</th>
-								<th>指导老师</th>
-								<th>限选专业</th>
-								<th>状态</th>
+								<th>留言名称</th>
+								<th>留言学生</th>
+								<th>留言时间</th>
 								<th>
 									操作
 								</th>
@@ -63,12 +62,14 @@
 						
 						</tbody>
 					</table>
+					
 				</div>
 			</div>
 		</div>
 	</div>
 	
-	<!-- 模态框（Modal） -->
+	
+<!-- 模态框（Modal） -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" 
    aria-labelledby="myModalLabel" aria-hidden="true">
    <div class="modal-dialog">
@@ -79,10 +80,20 @@
                   &times;
             </button>
             <h4 class="modal-title" id="myModalLabel">
-               请输入留言信息：
+               回复留言
             </h4>
          </div>
          <div class="modal-body">
+         	<div class="panel panel-default">
+   				<div class="panel-body">
+      				from:<span id="from" ></span>&nbsp;&nbsp;&nbsp;     时间：<span id="m_time"></span>
+   				</div>
+   				<div class="panel-body">
+      			留言内容：<div id="m_content"></div>
+   				</div>
+			</div>
+         
+         
            <textarea class="form-control" rows="2" id="mes_content">
            </textarea>
          </div>
@@ -96,116 +107,73 @@
          </div>
       </div><!-- /.modal-content -->
 </div>
-</div>
+</div>	
 	
 	
-	
+
 <script type="text/javascript">
 /*public function*/
-var items =3;
-var stu = getCookie("user");
 var delete_but = function(source){
 	$(source).click(function(){
 		var de_id = $(source).attr("de_id");
-		$.get("lxy/delestuissue",{stu_num:stu,issue_id:de_id},function(data){
-			if(data){
-				window.location.reload();
-			}else{
-				alert("取消失败");
-			}
-		});
+		deleteItem("lxy/deletemesbyid",de_id);
 	});
 }
 
-
-var sub_mes = function(source){
+//展示留言的相关信息
+var showMessage = function(source){
 	$(source).click(function(){
+		var from = $(source).attr("from");
+		var content = $(source).attr("content");
+		var m_time = $(source).attr("time");
+		$("#from").text(from);
+		$("#m_time").text(m_time);
+		$("#m_content").text(content);
 		$("#sub_mes").click(function(){
-			var teaNum = $(source).attr("teaNum");
-			var content = $("#mes_content").val();
-			var param = {"stu_id":stu,"tea_id":teaNum,"content":$.trim(content)};
-			$.getJSON("lxy/addmess2tea",param,function(data){
+			var t_id = $(source).attr("t_id");
+			var mes_content  = $("#mes_content").val();
+			$.getJSON("lxy/teareply2stu/"+t_id,{"reply":$.trim(mes_content)},function(data){
 				if(data){
-					alert("留言成功");
+					alert("回复成功");
 					window.location.reload();
 				}else{
-					alert("提交失败");
+					alert("回复失败");
 				}
-			});
+			})
 		});
 	});
-}
-
-
-var mypopover = function(tea_num,div_id){
-	$.get("lxy/getteabynum/"+tea_num,function(data){
-		var html = '';
-		var keyArr = ['老师编号','姓名','性别','电话','email','职称','老师介绍'];
-		var index = 0;
-		for(var item in data){
-			if(item!="id" && item!="password"){
-				html+= '<p>'+keyArr[index++]+':'+data[item]+'</p><br>';
-			}
-		}
-		$("#"+div_id).html(html);
-	});
 	
-	return '<div id="'+div_id+'">Loading...</div>';
 }
 
 
 
-var loadMessages = function(start){
-	$.getJSON("lxy/getstuissues/"+stu,function(data){
+var loadMessages = function(){
+	var tea_num = getCookie("user");
+	$.getJSON("lxy/getallmessagebytnum/"+tea_num,function(data){
 		$("tbody.abstract").empty();
-		$.each(data,function(index){
-			var stateStr;
-			var sta = this.state;
-			if(sta==0){
-				stateStr = "未审核";
-			}else if(sta==1){
-				stateStr = "通过";
-			}else if(sta==2){
-				stateStr = "未通过";
-			}
-			
-			
+		$.each(data,function(){
 			var html = '<tr>'
-						+'<td>'+this.i_name+'</td>'
-						+'<td>'+this.i_teacher+'<a tabindex="'+index+'" data-trigger="focus" tea_num="'+this.tea_num+'" title="老师信息" class="pp" data-container="body" data-toggle="popover" data-placement="bottom" data-content="">[详细]</a></td>'
-						+'<td>'+this.limit_pro+'</td>'
-						+'<td>'+stateStr+'</td>'
+						+'<td>'+this.content+'</td>'
+						+'<td>'+this.stu_name+'</td>'
+						+'<td>'+this.m_time+'</td>'
 						+'<td>'
-							+'<button type="button" class="btn btn-danger" id="delete_but" de_id="'+this.id+'">取消选择</button>'
-							+'&nbsp;'
-							+'<button type="button" class="btn btn-info mes_but" teaNum="'+this.tea_num+'" data-toggle="modal" data-target="#myModal">留言</button>'
+							+'<a type="button" class="btn btn-success reply"  t_id ="'+this.id+'" from="'+this.stu_name+'" content="'+this.content+'" time="'+this.m_time+'"    data-toggle="modal" data-target="#myModal">回复</a>'
+							+'<button type="button" class="btn btn-danger" id="delete_but" de_id="'+this.id+'">删除</button>'
 						+'</td>'
 						+'</tr>';
 			$("tbody.abstract").append(html);
 			var but = $("tbody.abstract").children().last().find("#delete_but");
 			delete_but(but);
 			
-			//留言
-			var but2 = $("tbody.abstract").children().last().find(".mes_but");
-			sub_mes(but2);
-			
-			var pp = $("tbody.abstract").children().last().find("a.pp");
-			$(pp).popover({
-				"html":true,
-				"content":function(){
-					var div_id = "tmp_id"+$.now();
-					return mypopover($(this).attr("tea_num"),div_id);
-				}
-			});
-			
-			
+			var but2 = $("tbody.abstract").children().last().find(".reply");
+			showMessage(but2);
 		});
 		
 	});
 	
 }
 	 $(function(){
-		 loadMessages(1);
+		 loadMessages();
 	})
 </script>
 

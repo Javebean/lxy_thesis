@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.lxy.entities.Issue;
+import com.lxy.entities.Message;
 import com.lxy.entities.Teacher;
 
 
@@ -170,6 +171,59 @@ public class TeacherDao {
 		}catch(Exception e){
 			e.printStackTrace();
 			return 0;
+		}
+	}
+	
+	
+	//查询给该老师的所有留言
+	@SuppressWarnings("unchecked")
+	public List<Message> getAllMessageByTeaNum(String tea_num){
+		try{
+			String hql = "from Message where tea_id = ?";
+			List<Message> list = getSession().createQuery(hql).setString(0, tea_num).list();
+			return list;
+		}catch(Exception e){
+			return null;
+		}
+	}
+	//更新Message表，插入老师和学生的姓名
+	public boolean updateMessage(Message m){
+		try{
+			getSession().saveOrUpdate(m);
+			return true;
+		}catch(Exception e){
+			return false;
+		}
+	}
+	
+	//老师回复
+	public boolean updateMessageReply( String id ,String reply){
+		try{
+			String hql = "update Message set reply_content =? where id =?";
+			int ex = getSession().createQuery(hql).setString(0, reply).setInteger(1, Integer.parseInt(id)).executeUpdate();
+			if(ex>0){
+				return true;
+			}else{
+				return false;
+			}
+		}catch(Exception e){
+			return false;
+		}
+	}
+	
+	//删除该留言
+	public boolean deleteMessageById(int id){
+		try{
+			String hql = "delete from Message where id = ?";
+			int ex = getSession().createQuery(hql).setInteger(0, id).executeUpdate();
+			if(ex>0){
+				return true;
+			}else{
+				return false;
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			return false;
 		}
 	}
 	

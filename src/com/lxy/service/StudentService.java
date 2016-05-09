@@ -1,6 +1,7 @@
 package com.lxy.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.lxy.dao.StudentDao;
 import com.lxy.entities.Issue;
+import com.lxy.entities.Message;
 import com.lxy.entities.Student;
 import com.lxy.entities.Student_issue;
 
@@ -115,6 +117,13 @@ public class StudentService {
 	
 	public Student getStuByStuNum(String stu_num){
 		return sdao.getStuByStuNum(stu_num);
+	}
+	
+	
+	//留言的接口i
+	public boolean addMessage2Tea(Message m){
+		m.setM_time(new Date());
+		return sdao.addMessage2Tea(m);
 	}
 
 	

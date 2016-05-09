@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lxy.entities.Issue;
+import com.lxy.entities.Message;
 import com.lxy.entities.Student;
 import com.lxy.entities.Student_issue;
 import com.lxy.service.StudentService;
@@ -59,4 +60,14 @@ public class StudentController {
 	public Student getStuByStuNum(String stu_num){
 		return ss.getStuByStuNum(stu_num);
 	}
+	
+	//留言的接口i
+	@RequestMapping(value="addmess2tea")
+	public boolean addMessage2Tea(Message m){
+		return ss.addMessage2Tea(m);
+	}
+	
+	//老师回复
+	
+	
 }
