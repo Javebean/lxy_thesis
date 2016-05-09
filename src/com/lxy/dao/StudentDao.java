@@ -212,4 +212,17 @@ public class StudentDao {
 		
 	}
 	
+	
+	//查询给该学生的所有留言
+		@SuppressWarnings("unchecked")
+		public List<Message> getAllMessageByStuNum(String stu_num){
+			try{
+				String hql = "from Message where stu_id = ?";
+				List<Message> list = getSession().createQuery(hql).setString(0, stu_num).list();
+				return list;
+			}catch(Exception e){
+				return null;
+			}
+		}
+	
 }

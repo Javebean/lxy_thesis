@@ -67,7 +67,12 @@ public class StudentController {
 		return ss.addMessage2Tea(m);
 	}
 	
-	//老师回复
+	//查询给该学生的所有留言
+	@RequestMapping(value="getallmessgesbystunum/{stu_num}")
+	public List<Message> getAllMessageByStuNum(@PathVariable String stu_num){
+		return ss.getAllMessageByStuNum(stu_num);
+	}
+		
 	
 	
 }
