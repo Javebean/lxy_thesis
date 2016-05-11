@@ -86,9 +86,18 @@ public class TeacherController {
 	
 	//老师回复
 	@RequestMapping(value="teareply2stu/{id}")
-	public boolean updateMessageReply(@PathVariable String id ,String reply){
-		return ts.updateMessageReply(id, reply);
+	public boolean updateMessageReply(@PathVariable String id ,String reply,String replyType){
+		return ts.updateMessageReply(id, reply,replyType);
 	}
+	
+	//查询主题id 的相关回复
+	@RequestMapping(value="getrelativereplybyid/{id}")
+	public List<Message> getRelativeReplyById(@PathVariable String id){
+		return ts.getRelativeReplyById(id);
+	}
+	
+	
+	
 	
 	//删除该留言
 	@RequestMapping(value="deletemesbyid/{id}")

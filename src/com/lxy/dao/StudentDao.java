@@ -224,5 +224,17 @@ public class StudentDao {
 				return null;
 			}
 		}
+		
+	//新的接口。不包括回复的留言
+	@SuppressWarnings("unchecked")
+	public List<Message> getAllMessageByStuNum2(String stu_num){
+		try{
+			String hql = "from Message where stu_id = ? and replyId is null";
+			List<Message> list = getSession().createQuery(hql).setString(0, stu_num).list();
+			return list;
+		}catch(Exception e){
+			return null;
+		}
+	}
 	
 }

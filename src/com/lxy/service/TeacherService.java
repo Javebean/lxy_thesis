@@ -108,7 +108,7 @@ public class TeacherService {
 	//查询给该老师的所有留言
 	public List<Message> getAllMessageByTeaNum(String tea_num){
 		
-		List<Message> list =  tdao.getAllMessageByTeaNum(tea_num);
+		List<Message> list =  tdao.getAllMessageByTeaNum2(tea_num);
 		for(Message m:list){
 			//先判断表里面 老师的名字是不是为空，为空就保存一下，
 			
@@ -125,9 +125,17 @@ public class TeacherService {
 		}
 		return list;
 	}
+	
+	
+	//查询主题id 的相关回复
+	public List<Message> getRelativeReplyById(String id){
+		return tdao.getRelativeReplyById(id);
+	}
+
+	
 	//老师回复
-	public boolean updateMessageReply( String id ,String reply){
-		return tdao.updateMessageReply(id, reply);
+	public boolean updateMessageReply( String id ,String reply,String replyType){
+		return tdao.updateMessageReply2(id, reply,replyType);
 	}
 	
 	//删除该留言

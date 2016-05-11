@@ -25,6 +25,9 @@ public class Message {
 	private String content;//内容
 	private String reply_content;//老师回复的内容
 	
+	private String replyId;//回复replyId这个人的信息
+	private int replyType;//0:老师回复学生       1：学生回复老师
+	
 	@GenericGenerator(name="a",strategy="native")
 	@GeneratedValue(generator="a")
 	@Id
@@ -79,6 +82,22 @@ public class Message {
 	}
 	public void setM_time(Date m_time) {
 		this.m_time = m_time;
+	}
+	
+	public String getReplyId() {
+		return replyId;
+	}
+	
+	public void setReplyId(String replyId) {
+		this.replyId = replyId;
+	}
+	
+	public int getReplyType() {
+		return replyType;
+	}
+	
+	public void setReplyType(int replyType) {
+		this.replyType = replyType;
 	}
 	
 	

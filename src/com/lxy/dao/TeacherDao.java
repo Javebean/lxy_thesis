@@ -1,5 +1,6 @@
 package com.lxy.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -176,6 +177,7 @@ public class TeacherDao {
 	
 	
 	//查询给该老师的所有留言
+	@Deprecated
 	@SuppressWarnings("unchecked")
 	public List<Message> getAllMessageByTeaNum(String tea_num){
 		try{
@@ -186,6 +188,34 @@ public class TeacherDao {
 			return null;
 		}
 	}
+	
+	
+	//查询给该老师的所有留言--新的接口(不包括回复)
+	@SuppressWarnings("unchecked")
+	public List<Message> getAllMessageByTeaNum2(String tea_num){
+		try{
+			String hql = "from Message where tea_id = ? and replyId is null";
+			List<Message> list = getSession().createQuery(hql).setString(0, tea_num).list();
+			return list;
+		}catch(Exception e){
+			return null;
+		}
+	}
+	
+	//查询主题id 的相关回复
+	@SuppressWarnings("unchecked")
+	public List<Message> getRelativeReplyById(String id){
+		try{
+			String hql = "from Message where replyId = ? ";
+			List<Message> list = getSession().createQuery(hql).setString(0, id).list();
+			return list;
+		}catch(Exception e){
+			return null;
+		}
+	}
+	
+	
+	
 	//更新Message表，插入老师和学生的姓名
 	public boolean updateMessage(Message m){
 		try{
@@ -197,6 +227,7 @@ public class TeacherDao {
 	}
 	
 	//老师回复
+	@Deprecated
 	public boolean updateMessageReply( String id ,String reply){
 		try{
 			String hql = "update Message set reply_content =? where id =?";
@@ -210,6 +241,27 @@ public class TeacherDao {
 			return false;
 		}
 	}
+	
+	
+	//老师回复新的接口。上面那个即将废弃
+	public boolean updateMessageReply2( String id ,String reply,String replyType){
+		try{
+			StringBuilder hql = new StringBuilder();
+			hql.append("insert into Message (m_time,stu_id,stu_name,tea_id,tea_name,content,replyId,replyType) select ");
+			hql.append(":m_time, stu_id, stu_name,tea_id,tea_name, :content, :replyId, :replyType from Message where id= :id");
+			
+			int ex = getSession().createSQLQuery(hql.toString()).setString("replyType", replyType).setTimestamp("m_time",new Date()).setString("content", reply).setString("replyId", id).setInteger("id", Integer.parseInt(id)).executeUpdate();
+			if(ex>0){
+				return true;
+			}else{
+				return false;
+			}
+		}catch(Exception e){
+			return false;
+		}
+	}
+	
+	
 	
 	//删除该留言
 	public boolean deleteMessageById(int id){

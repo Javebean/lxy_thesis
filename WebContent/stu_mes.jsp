@@ -50,8 +50,8 @@
 					<table class="table table-striped">
 						<thead>
 							<tr>
-								<th>留言名称</th>
-								<th>老师留言</th>
+								<th>留言内容</th>
+								<th>留言学生</th>
 								<th>留言时间</th>
 								<th>
 									操作
@@ -68,7 +68,7 @@
 		</div>
 	</div>
 	
-	
+
 <!-- 模态框（Modal） -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" 
    aria-labelledby="myModalLabel" aria-hidden="true">
@@ -80,17 +80,11 @@
                   &times;
             </button>
             <h4 class="modal-title" id="myModalLabel">
-               回复留言
+           
             </h4>
          </div>
          <div class="modal-body">
-         	<div class="panel panel-default">
-   				<div class="panel-body">
-      				from:<span id="from" ></span>&nbsp;&nbsp;&nbsp;     时间：<span id="m_time"></span>
-   				</div>
-   				<div class="panel-body">
-      			留言内容：<div id="m_content"></div>
-   				</div>
+         	<div class="panel panel-default" id="relative_reply" style="max-height:400px; overflow: scroll;">
 			</div>
          
          
@@ -107,8 +101,7 @@
          </div>
       </div><!-- /.modal-content -->
 </div>
-</div>	
-	
+</div>
 	
 
 <script type="text/javascript">
@@ -123,16 +116,37 @@ var delete_but = function(source){
 //展示留言的相关信息
 var showMessage = function(source){
 	$(source).click(function(){
-		var from = $(source).attr("from");
 		var content = $(source).attr("content");
-		var m_time = $(source).attr("time");
-		$("#from").text(from);
-		$("#m_time").text(m_time);
-		$("#m_content").text(content);
+		$("#myModalLabel").text(content);
+		
+		var t_id = $(source).attr("t_id");
+		$.getJSON("lxy/getrelativereplybyid/"+t_id,function(data){
+			$("#relative_reply").empty();
+			$.each(data,function(){
+				var repName = "";
+				//根据 replyType判断是老师回复还是学生回复
+				if(this.replyType==0){
+					repName = this.tea_name;
+				}else if(this.replyType==1){
+					repName = this.stu_name;
+				}
+				
+				html = '<div class="panel-body">'
+      				+repName+'&nbsp;&nbsp;&nbsp;'+this.m_time+'<br/>'
+      				+this.content
+       				+'</div>';
+       			$("#relative_reply").append(html);
+			});
+			
+			
+		});
+
+		
+		
 		$("#sub_mes").click(function(){
 			var t_id = $(source).attr("t_id");
 			var mes_content  = $("#mes_content").val();
-			$.getJSON("lxy/teareply2stu/"+t_id,{"reply":$.trim(mes_content)},function(data){
+			$.getJSON("lxy/teareply2stu/"+t_id,{"reply":$.trim(mes_content),"replyType":1},function(data){
 				if(data){
 					alert("回复成功");
 					window.location.reload();
@@ -151,13 +165,13 @@ var loadMessages = function(){
 	var tea_num = getCookie("user");
 	$.getJSON("lxy/getallmessgesbystunum/"+tea_num,function(data){
 		$("tbody.abstract").empty();
-		$.each(data,function(){
+		$.each(data,function(index){
 			var html = '<tr>'
 						+'<td>'+this.content+'</td>'
-						+'<td>'+this.reply_content+'</td>'
+						+'<td>'+this.stu_name+'</td>'
 						+'<td>'+this.m_time+'</td>'
 						+'<td>'
-							/* +'<a type="button" class="btn btn-success reply"  t_id ="'+this.id+'" from="'+this.stu_name+'" content="'+this.content+'" time="'+this.m_time+'"    data-toggle="modal" data-target="#myModal">回复</a>' */
+							+'<a type="button" class="btn btn-success reply"  t_id ="'+this.id+'" from="'+this.stu_name+'" content="'+this.content+'" time="'+this.m_time+'"    data-toggle="modal" data-target="#myModal">详情</a>'
 							+'<button type="button" class="btn btn-danger" id="delete_but" de_id="'+this.id+'">删除</button>'
 						+'</td>'
 						+'</tr>';
@@ -168,12 +182,16 @@ var loadMessages = function(){
 			var but2 = $("tbody.abstract").children().last().find(".reply");
 			showMessage(but2);
 		});
-		
+		$("[data-toggle='popover']").popover();
 	});
 	
 }
 	 $(function(){
 		 loadMessages();
+		 
+		 $('#myModal').on('hide.bs.modal', function () {
+			 $("#sub_mes").off("click");
+		 });
 	})
 </script>
 

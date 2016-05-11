@@ -128,7 +128,7 @@ public class StudentService {
 
 	//查询给该学生的所有留言
 	public List<Message> getAllMessageByStuNum(String stu_num){
-		return sdao.getAllMessageByStuNum(stu_num);
+		return sdao.getAllMessageByStuNum2(stu_num);
 	}
 	
 }
